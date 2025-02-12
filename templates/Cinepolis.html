@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+
+{% block container %}
+    <style>
+        body {
+            font-family: "Times New Roman", serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            display: flex;
+            justify-content: space-between;
+            width: 80%;
+        }
+        .box {
+            padding: 20px;
+            border: 1px solid black;
+            width: 30%;
+            text-align: center;
+        }
+        h1, h3 {
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid black;
+        }
+        input[type="radio"] {
+            margin-left: 10px;
+        }
+        input[type="submit"] {
+            border: 1px solid black;
+            padding: 10px 15px;
+            cursor: pointer;
+            background: none;
+            margin: 5px;
+        }
+    </style>
+
+    <form action="/calcular" method="post">
+        <div class="container">
+            <div class="box">
+                <h3>ENTRADAS</h3>
+                <label>Nombre:</label>
+                <input type="text" name="nombre" required>
+
+                <label>Cantidad Compradores:</label>
+                <input type="text" name="cantCompradores" required>
+
+                <label>Tarjeta Cineco:</label>
+                <input type="radio" name="tarjetaCineco" value="si" required> SI
+                <input type="radio" name="tarjetaCineco" value="no" required> NO
+
+                <label>Cantidad De Boletos:</label>
+                <input type="text" name="cantBoletos" required>
+            </div>
+            <div class="box">
+                <h3>SALIDAS</h3>
+                <label>Valor a pagar:</label>
+                <input type="text" name="total" readonly value="{{ total }}">
+            </div>
+            <div class="box">
+                <h3>ACCIONES</h3>
+                <input type="submit" value="Procesar">
+                <input type="submit" value="Salir">
+            </div>
+        </div>
+    </form>
+{% endblock %}

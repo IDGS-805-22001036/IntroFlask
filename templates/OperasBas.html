@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block container %}
+        
+<form action="/resultado" method="post">
+
+    <label>N1:</label>
+    <input type="text" name="n1"><br>
+    <label>N2:</label>
+    <input type="text" name="n2"><br>
+
+    <input type="radio" name="suma" id="suma" autocomplete="off" /> Suma
+    <input type="radio" name="resta" id="resta" autocomplete="off" /> Resta
+    <input type="radio" name="multi" id="multi" autocomplete="off" /> Multiplicación
+    <input type="radio" name="div" id="div" autocomplete="off" /> División<br><br>
+
+    <input type="submit" value="Calcular">
+    <input type="text" name="resultado" value="{{ resultado }}" style="width: 250px;"><br>
+</form>
+
+{%endblock%}

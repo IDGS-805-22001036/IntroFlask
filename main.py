@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app=Flask(__name__)
 
@@ -50,6 +50,88 @@ def form1():
             </form>
 
             '''
+
+@app.route("/OperasBas")
+def operas():
+    return render_template("OperasBas.html")
+
+@app.route("/resultado", methods=["GET", "POST"])
+def result():
+    resultado = ""
+    if request.method == "POST":
+        num1 = request.form.get("n1")
+        num2 = request.form.get("n2")
+
+        # Convertir los números a enteros
+        num1 = int(num1)
+        num2 = int(num2)
+
+        if request.form.get("suma") is not None:
+            resultado = num1 + num2
+            resultado = "La Suma de {} + {} = {}".format(num1, num2, resultado)
+        
+        elif request.form.get("resta") is not None:
+            resultado = num1 - num2
+            resultado = "La Resta de {} - {} = {}".format(num1, num2, resultado)
+        
+        elif request.form.get("multi") is not None:
+            resultado = num1 * num2
+            resultado = "La multiplicación de {} x {} = {}".format(num1, num2, resultado)
+        
+        elif request.form.get("div") is not None:
+            if num2 != 0: 
+                resultado = num1 / num2
+                resultado = "La División de {} / {} = {}".format(num1, num2, resultado)
+            else:
+                resultado = "Error: No se puede dividir por cero."
+
+    return render_template("OperasBas.html", resultado=resultado)
+
+
+
+class Total:
+    precio_boleto = 12
+
+    def calcular_descuento(self, total, cant_boletos):
+        if cant_boletos > 5:
+            return total * 0.85  # 15% de descuento
+        elif 3 <= cant_boletos <= 5:
+            return total * 0.90  # 10% de descuento
+        return total  # Sin descuento
+
+    def pago_tarjeta(self, total, forma_pago):
+        if forma_pago == "si":
+            return total * 0.90  # Descuento adicional del 10%
+        return total
+
+@app.route("/Cinepolis")
+def Cinepolis():
+    return render_template("Cinepolis.html", total="")
+
+@app.route('/calcular', methods=['POST'])
+def calcular():
+    try:
+        nombre = request.form.get('nombre', '').strip()
+        cant_compradores = request.form.get('cantCompradores', '0').strip()
+        cant_boletos = request.form.get('cantBoletos', '0').strip()
+        tarjeta_cineco = request.form.get('tarjetaCineco', 'no')
+
+        # Validar que los campos numéricos sean valores enteros válidos
+        if not cant_compradores.isdigit() or not cant_boletos.isdigit():
+            return render_template('Cinepolis.html', total="Error: Ingresa valores numéricos válidos")
+
+        cant_compradores = int(cant_compradores)
+        cant_boletos = int(cant_boletos)
+
+        t = Total()
+        total_sin_descuento = cant_boletos * t.precio_boleto
+        total_con_descuento = t.calcular_descuento(total_sin_descuento, cant_boletos)
+        total_final = t.pago_tarjeta(total_con_descuento, tarjeta_cineco)
+
+        return render_template('Cinepolis.html', total=round(total_final, 2))
+
+    except Exception as e:
+        return render_template('Cinepolis.html', total=f"Error: {str(e)}")
 
 if __name__ == "__main__":
     app.run(debug=True, port=3000)
