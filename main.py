@@ -1,6 +1,9 @@
 from flask import Flask, render_template, request
+from datetime import datetime
+import forms 
+from formsZodiaco import UserForm
 
-import forms
+
 
 app=Flask(__name__)
 
@@ -17,13 +20,48 @@ def alumnos():
     ape=''
     email=''
     alumno_clase=forms.UserFrom(request.form)
-    if request.method=="POST":
+    if request.method=="POST" and alumno_clase.validate():
         mat=alumno_clase.matricula.data
         ape=alumno_clase.apellido.data
         nom=alumno_clase.nombre.data
         email=alumno_clase.email.data
         print('Nombre: {}'.format(nom))
-    return render_template("alumnos.html",form=alumno_clase)
+    return render_template("alumnos.html",form=alumno_clase, mat=mat, nom=nom,ape=ape, email=email)
+
+
+def calcular_zodiaco(anio):
+    signos = ["Mono", "Gallo", "Perro", "Cerdo", "Rata", "Buey", 
+              "Tigre", "Conejo", "Dragón", "Serpiente", "Caballo", "Cabra"]
+    signo = signos[anio % 12]
+    imagen = f"../static/Boostrap/bootstrap/img/zodiaco/{signo}.png"
+    return signo, imagen
+
+@app.route("/zodiaco", methods=["GET", "POST"])
+def signo():
+    nombre = ''
+    apaterno = ''
+    amaterno = ''
+    dia = 0
+    mes = 0
+    anio = 0
+    edad = 0
+    signo = ''
+    imagen = ''
+    form = UserForm(request.form)
+    
+    if request.method == "POST" and form.validate():
+        nombre = form.nombre.data
+        apaterno = form.apaterno.data
+        amaterno = form.amaterno.data
+        dia = int(form.dia.data)
+        mes = int(form.mes.data)
+        anio = int(form.anio.data)
+        hoy = datetime.now()
+        edad = hoy.year - anio
+        if (hoy.month, hoy.day) < (mes, dia):
+            edad -= 1
+        signo, imagen = calcular_zodiaco(anio)
+    return render_template("ZodiacoChino.html", form=form, nombre=nombre, apaterno=apaterno, amaterno=amaterno, edad=edad, signo=signo, imagen=imagen)
 
 @app.route("/ejemplo1")
 def ejemplo1():

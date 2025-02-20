@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+{% block container %}
+        
+{% import "_macros.html" as macros %}
+<h1>Datos Personales</h1>
+<form action="" method="post" novalidate>
+    <div class="row control-group">
+        <div class="form-group col-xs-12 floating-label-form-group controls">
+            {{ macros.campoNuevo(form.nombre, class='form-control', placeholder='Nombre') }}
+        </div>
+    </div>
+    
+    <div class="row control-group">
+        <div class="form-group col-xs-12 floating-label-form-group controls">
+            {{ macros.campoNuevo(form.apaterno, class='form-control', placeholder='Apellido Paterno') }}
+        </div>
+    </div>
+    
+    <div class="row control-group">
+        <div class="form-group col-xs-12 floating-label-form-group controls">
+            {{ macros.campoNuevo(form.amaterno, class='form-control', placeholder='Apellido Materno') }}
+        </div>
+    </div>
+    
+    <h3>Fecha de nacimiento</h3>
+    <div class="row">
+        <div class="col-xs-4">
+            {{ macros.campoNuevo(form.dia, class='form-control', placeholder='Día') }}
+        </div>
+        <div class="col-xs-4">
+            {{ macros.campoNuevo(form.mes, class='form-control', placeholder='Mes') }}
+        </div>
+        <div class="col-xs-4">
+            {{ macros.campoNuevo(form.anio, class='form-control', placeholder='Año') }}
+        </div>
+    </div>
+    
+    <h3>Sexo</h3>
+    <div>
+        {{ form.sexo }} Masculino
+        {{ form.sexo }} Femenino
+    </div>
+    
+    <button type="submit" class="btn btn-primary">IMPRIMIR</button>
+</form>
+
+<h2>Hola <i>{{ nombre }} {{apaterno}} {{amaterno}}</i></h2>
+<h3>Tienes <b>{{ edad }}</b> años</h3>
+<h3>Tu signo zodiacal es <b>{{ signo }}</b></h3>
+{% if signo != "Fecha no válida" %}
+        <img src="{{ url_for('static', filename='Boostrap/bootstrap/img/zodiaco/' + signo + '.png') }}"
+            alt="{{ signo }}" style="max-width: 300px;">
+{% endif %}
+{% endblock %}
