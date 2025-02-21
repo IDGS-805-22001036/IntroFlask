@@ -2,10 +2,14 @@ from flask import Flask, render_template, request
 from datetime import datetime
 import forms 
 from formsZodiaco import UserForm
+from flask import g, flash #Crear variables globales
+from flask_wtf.csrf import CSRFProtect
 
 
 
 app=Flask(__name__)
+app.secret_key='esta es una clave secreta'
+csrf=CSRFProtect()
 
 @app.route("/")
 def index():
@@ -15,6 +19,7 @@ def index():
 
 @app.route("/alumnos",methods=["GET", "POST"])
 def alumnos():
+    print("Alumno {}".format(g.nombre))
     mat=''
     nom=''
     ape=''
@@ -25,6 +30,8 @@ def alumnos():
         ape=alumno_clase.apellido.data
         nom=alumno_clase.nombre.data
         email=alumno_clase.email.data
+        mensaje='Bienvenido {}'.format(nom)
+        flash(mensaje)
         print('Nombre: {}'.format(nom))
     return render_template("alumnos.html",form=alumno_clase, mat=mat, nom=nom,ape=ape, email=email)
 
@@ -188,5 +195,20 @@ def calcular():
     except Exception as e:
         return render_template('Cinepolis.html', total=f"Error: {str(e)}")
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html')
+
+@app.before_request
+def before_request():
+    g.nombre="Mario"
+    print("before 1")
+
+@app.after_request
+def after_request(response):
+    print("after 1")
+    return response
+
 if __name__ == "__main__":
+    csrf.init_app(app)
     app.run(debug=True, port=3000)

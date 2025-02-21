@@ -16,4 +16,4 @@ class UserFrom(Form):
         validators.DataRequired(message="El campo es requerido"),
     ])
     email=StringField('Email',[
-        validators.Email(message="Ingrese un correo valido")])
+        validators.DataRequired(message="Ingrese un correo valido")])
